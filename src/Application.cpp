@@ -2,25 +2,33 @@
 
 namespace Rasterization {
 
-Application::Application(const std::string &name, const uint32_t width,
+Application::Application(const std::string &title, const uint32_t width,
                          const uint32_t height)
-    : m_Name(name), m_Width(width), m_Height(height) {
+    : m_Title(title), m_Width(width), m_Height(height) {
   Init();
 }
 
-Application::~Application() {}
+Application::~Application() { Terminate(); }
 
-void Application::Init() {}
+void Application::Init() {
+  m_Window = Window::Create(m_Title, m_Width, m_Height);
+}
 
 void Application::Run() {
-  bool isRunning = true;
-  while (isRunning) {
+
+  while (!m_Window->Closed()) {
     OnUpdate();
+
+    m_Window->PollInputEvents();
   }
 }
 
-void Application::Terminate() {}
+void Application::Terminate() { m_Window->Terminate(); }
 
-void Application::OnUpdate() {}
+void Application::OnUpdate() {
+  auto frameBuffer = CreateRef<FrameBuffer>();
+
+  m_Window->DrawFrameBuffer(frameBuffer);
+}
 
 } // namespace Rasterization

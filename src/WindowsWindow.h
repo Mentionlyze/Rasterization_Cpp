@@ -18,9 +18,16 @@ public:
 
   virtual bool Closed() const override { return m_Closed; };
 
+  virtual void DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) override;
+
+  virtual void PollInputEvents() override;
+
 private:
   void Register();
   void UnRegister();
+
+  static LRESULT CALLBACK WndProc(const HWND hWnd, const UINT msgID,
+                                  const WPARAM wParam, const LPARAM lParam);
 
 private:
   bool m_Closed;

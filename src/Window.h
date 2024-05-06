@@ -1,6 +1,8 @@
+#include "Base.h"
+#include "FrameBuffer.h"
 #include <cstdint>
-#include <memory>
 #include <string>
+
 namespace Rasterization {
 class Window {
 public:
@@ -14,8 +16,12 @@ public:
 
   virtual bool Closed() const = 0;
 
+  virtual void DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) = 0;
+
+  virtual void PollInputEvents() = 0;
+
 public:
-  static std::unique_ptr<Window>
-  Create(const std::string &title, const uint32_t width, const uint32_t height);
+  static Scope<Window> Create(const std::string &title, const uint32_t width,
+                              const uint32_t height);
 };
 } // namespace Rasterization

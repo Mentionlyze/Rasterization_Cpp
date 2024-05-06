@@ -1,11 +1,12 @@
 #pragma once
+#include "Window.h"
 #include <cstdint>
 #include <string>
 
 namespace Rasterization {
 class Application {
 public:
-  Application(const std::string &name, const uint32_t widht,
+  Application(const std::string &title, const uint32_t width,
               const uint32_t height);
   ~Application();
 
@@ -17,7 +18,9 @@ private:
   void OnUpdate();
 
 private:
-  std::string m_Name;
+  std::string m_Title;
   uint32_t m_Width, m_Height;
+
+  Scope<Window> m_Window;
 };
 } // namespace Rasterization
