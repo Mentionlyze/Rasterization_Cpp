@@ -1,10 +1,11 @@
 #include "Application.h"
+#include "FrameBuffer.h"
 
 namespace Rasterization {
 
 Application::Application(const std::string &title, const uint32_t width,
                          const uint32_t height)
-    : m_Title(title), m_Width(width), m_Height(height) {
+    : m_Title{title}, m_Width{width}, m_Height{height} {
   Init();
 }
 
@@ -26,7 +27,8 @@ void Application::Run() {
 void Application::Terminate() { m_Window->Terminate(); }
 
 void Application::OnUpdate() {
-  auto frameBuffer = CreateRef<FrameBuffer>();
+  auto frameBuffer = CreateRef<FrameBuffer>(m_Width, m_Height);
+  frameBuffer->Clear({2.0, 3.0, 5.0});
 
   m_Window->DrawFrameBuffer(frameBuffer);
 }

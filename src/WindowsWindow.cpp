@@ -7,8 +7,8 @@
 namespace Rasterization {
 WindowsWindow::WindowsWindow(const std::string &title, const uint32_t width,
                              const uint32_t height)
-    : m_Title(title), m_Width(width), m_Height(height), m_Closed(true),
-      m_Inited(false) {
+    : m_Title{title}, m_Width{width}, m_Height{height}, m_Closed{true},
+      m_Inited{false} {
   Init();
 
   DWORD style = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
@@ -98,11 +98,43 @@ void WindowsWindow::Register() {
   atom = RegisterClass(&wc);
 }
 
-void WindowsWindow::UnRegister() {}
+void WindowsWindow::UnRegister() {
+  UnregisterClass(RASTERIZATION_CLASS_NAME, GetModuleHandle(nullptr));
+}
 
-void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {};
+void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {
+  auto f_Width = frameBuffer->GetWidth();
+  auto f_Height = frameBuffer->GetHeight();
 
-void WindowsWindow::PollInputEvents() {};
+  for (uint32_t i = 0; i < f_Height; i++) {
+    for (uint32_t j = 0; j < f_Width; j++) {
+      constexpr uint32_t channelCount = 3;
+      constexpr uint32_t rChannel = 2;
+      constexpr uint32_t gChannel = 1;
+      constexpr uint32_t bChannel = 0;
+
+      auto color = frameBuffer->GetColor(j, f_Height - 1 - i);
+      const uint32_t pixelStart = (i * f_Width + j) * channelCount;
+      const uint32_t rIndex = pixelStart + rChannel;
+      const uint32_t gIndex = pixelStart + gChannel;
+      const uint32_t bIndex = pixelStart + bChannel;
+
+      m_Buffer[rIndex] = color[0] * 255.0;
+      m_Buffer[gIndex] = color.g;
+      m_Buffer[bIndex] = color.b;
+    }
+  }
+
+  Show();
+};
+
+void WindowsWindow::PollInputEvents() {
+  MSG message;
+  while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
+    TranslateMessage(&message);
+    DispatchMessage(&message);
+  }
+};
 
 LRESULT CALLBACK WindowsWindow::WndProc(const HWND hWnd, const UINT msgID,
                                         const WPARAM wParam,
