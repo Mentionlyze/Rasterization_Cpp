@@ -1,10 +1,11 @@
 #include "Application.h"
+#include "FrameBuffer.h"
 
 namespace Rasterization {
 
 Application::Application(const std::string &title, const uint32_t width,
                          const uint32_t height)
-    : m_Title(title), m_Width(width), m_Height(height) {
+    : m_Title{title}, m_Width{width}, m_Height{height} {
   Init();
 }
 

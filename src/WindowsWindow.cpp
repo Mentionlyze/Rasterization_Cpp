@@ -10,9 +10,8 @@
 namespace Rasterization {
 WindowsWindow::WindowsWindow(const std::string &title, const uint32_t width,
                              const uint32_t height)
-    : m_Title(title), m_Width(width), m_Height(height), m_Closed(true),
-      m_Inited(false) {
-
+    : m_Title{title}, m_Width{width}, m_Height{height}, m_Closed{true},
+      m_Inited{false} {
   Init();
 
   DWORD style = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
