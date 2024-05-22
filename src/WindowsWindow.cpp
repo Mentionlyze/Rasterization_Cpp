@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "Math.h"
 #include <libloaderapi.h>
+#include <wingdi.h>
 #include <winuser.h>
 
 #define RASTERIZATION_ENTRY_NAME "Entry"
@@ -42,7 +43,7 @@ WindowsWindow::WindowsWindow(const std::string &title, const uint32_t width,
   biHeader.biWidth = (long)width;
   biHeader.biHeight = -(long)height;
   biHeader.biPlanes = 1;
-  biHeader.biBitCount = 24;
+  biHeader.biBitCount = 32;
   biHeader.biCompression = BI_RGB;
 
   newBitmap = CreateDIBSection(m_MemoryDC, (BITMAPINFO *)&biHeader,
@@ -86,19 +87,20 @@ void WindowsWindow::Show() {
 }
 
 void WindowsWindow::Register() {
-  ATOM atom;
-  WNDCLASS wc = {0};
-  wc.cbClsExtra = 0;
-  wc.cbWndExtra = 0;
-  wc.hbrBackground = (HBRUSH)(WHITE_BRUSH);
-  wc.hCursor = nullptr;
-  wc.hIcon = nullptr;
-  wc.hInstance = GetModuleHandle(nullptr);
-  wc.lpfnWndProc = WindowsWindow::WndProc;
-  wc.lpszClassName = RASTERIZATION_CLASS_NAME;
-  wc.style = CS_HREDRAW | CS_VREDRAW;
-  wc.lpszMenuName = nullptr;
-  atom = RegisterClass(&wc);
+  ATOM class_atom;
+  WNDCLASS window_class;
+  window_class.style = CS_HREDRAW | CS_VREDRAW;
+  window_class.cbClsExtra = 0;
+  window_class.cbWndExtra = 0;
+  window_class.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+  window_class.hIcon = LoadCursor(nullptr, IDI_APPLICATION);
+  window_class.hCursor = nullptr;
+  window_class.hInstance = GetModuleHandle(nullptr);
+  window_class.lpfnWndProc = WindowsWindow::WndProc;
+  window_class.lpszMenuName = nullptr;
+  window_class.lpszClassName = RASTERIZATION_CLASS_NAME;
+  class_atom = RegisterClass(&window_class);
+  ASSERT(class_atom != 0);
 }
 
 void WindowsWindow::UnRegister() {
@@ -113,21 +115,18 @@ void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {
     for (uint32_t j = 0; j < width; j++) {
       // 反转RGB显示
       constexpr uint32_t channelCount = 4;
-      constexpr uint32_t redChannel = 3;
-      constexpr uint32_t greenChannel = 2;
-      constexpr uint32_t blueChannel = 1;
-      constexpr uint32_t alphaChannel = 0;
+      constexpr uint32_t redChannel = 2;
+      constexpr uint32_t greenChannel = 1;
+      constexpr uint32_t blueChannel = 0;
 
       auto color = frameBuffer->GetColor(j, height - 1 - i);
       const uint32_t pixelStart = (i * width + j) * channelCount;
       const uint32_t rIndex = pixelStart + redChannel;
       const uint32_t gIndex = pixelStart + greenChannel;
       const uint32_t bIndex = pixelStart + blueChannel;
-      const uint32_t aIndex = pixelStart + alphaChannel;
       m_Buffer[rIndex] = Float2UChar(color[0]);
       m_Buffer[gIndex] = Float2UChar(color.g);
       m_Buffer[bIndex] = Float2UChar(color.b);
-      m_Buffer[aIndex] = Float2UChar(color.a);
     }
   }
 
