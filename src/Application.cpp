@@ -26,8 +26,9 @@ void Application::Run() {
 void Application::Terminate() { m_Window->Terminate(); }
 
 void Application::OnUpdate() {
-  auto frameBuffer = CreateRef<FrameBuffer>();
-
+  auto frameBuffer = CreateRef<FrameBuffer>(m_Width, m_Height);
+  frameBuffer->Clear({0.5f, 0.3f, 0.5f});
+  frameBuffer->ClearDepth();
   m_Window->DrawFrameBuffer(frameBuffer);
 }
 

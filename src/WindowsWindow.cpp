@@ -1,5 +1,8 @@
 #include "WindowsWindow.h"
 #include "Base.h"
+#include "Math.h"
+#include <libloaderapi.h>
+#include <winuser.h>
 
 #define RASTERIZATION_ENTRY_NAME "Entry"
 #define RASTERIZATION_CLASS_NAME "Class"
@@ -9,6 +12,7 @@ WindowsWindow::WindowsWindow(const std::string &title, const uint32_t width,
                              const uint32_t height)
     : m_Title(title), m_Width(width), m_Height(height), m_Closed(true),
       m_Inited(false) {
+
   Init();
 
   DWORD style = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
@@ -98,11 +102,43 @@ void WindowsWindow::Register() {
   atom = RegisterClass(&wc);
 }
 
-void WindowsWindow::UnRegister() {}
+void WindowsWindow::UnRegister() {
+  UnregisterClass(RASTERIZATION_CLASS_NAME, GetModuleHandleA(nullptr));
+}
 
-void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {};
+void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {
+  const uint32_t width = frameBuffer->GetWidth();
+  const uint32_t height = frameBuffer->GetHeight();
 
-void WindowsWindow::PollInputEvents() {};
+  for (uint32_t i = 0; i < height; i++) {
+    for (uint32_t j = 0; j < width; j++) {
+      // 反转RGB显示
+      constexpr uint32_t channelCount = 3;
+      constexpr uint32_t redChannel = 2;
+      constexpr uint32_t greenChannel = 1;
+      constexpr uint32_t blueChannel = 0;
+
+      auto color = frameBuffer->GetColor(j, height - 1 - i);
+      const uint32_t pixelStart = (i * width + j) * channelCount;
+      const uint32_t rIndex = pixelStart + redChannel;
+      const uint32_t gIndex = pixelStart + greenChannel;
+      const uint32_t bIndex = pixelStart + blueChannel;
+      m_Buffer[rIndex] = Float2UChar(color[0]);
+      m_Buffer[gIndex] = Float2UChar(color.G);
+      m_Buffer[bIndex] = Float2UChar(color.B);
+    }
+  }
+
+  Show();
+};
+
+void WindowsWindow::PollInputEvents() {
+  MSG message;
+  while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
+    TranslateMessage(&message);
+    DispatchMessage(&message);
+  }
+};
 
 LRESULT CALLBACK WindowsWindow::WndProc(const HWND hWnd, const UINT msgID,
                                         const WPARAM wParam,
@@ -111,7 +147,6 @@ LRESULT CALLBACK WindowsWindow::WndProc(const HWND hWnd, const UINT msgID,
   if (window == nullptr) {
     return DefWindowProc(hWnd, msgID, wParam, lParam);
   }
-
   switch (msgID) {
   case WM_DESTROY:
     window->m_Closed = true;
