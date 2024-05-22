@@ -48,7 +48,7 @@ WindowsWindow::WindowsWindow(const std::string &title, const uint32_t width,
   newBitmap = CreateDIBSection(m_MemoryDC, (BITMAPINFO *)&biHeader,
                                DIB_RGB_COLORS, (void **)&m_Buffer, nullptr, 0);
   ASSERT(newBitmap != nullptr);
-  constexpr uint32_t channelCount = 3;
+  constexpr uint32_t channelCount = 4;
   uint32_t size = m_Width * m_Height * channelCount * sizeof(u_char);
   memset(m_Buffer, 0, size);
   oldBitmap = (HBITMAP)SelectObject(m_MemoryDC, newBitmap);
@@ -112,19 +112,22 @@ void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {
   for (uint32_t i = 0; i < height; i++) {
     for (uint32_t j = 0; j < width; j++) {
       // 反转RGB显示
-      constexpr uint32_t channelCount = 3;
-      constexpr uint32_t redChannel = 2;
-      constexpr uint32_t greenChannel = 1;
-      constexpr uint32_t blueChannel = 0;
+      constexpr uint32_t channelCount = 4;
+      constexpr uint32_t redChannel = 3;
+      constexpr uint32_t greenChannel = 2;
+      constexpr uint32_t blueChannel = 1;
+      constexpr uint32_t alphaChannel = 0;
 
       auto color = frameBuffer->GetColor(j, height - 1 - i);
       const uint32_t pixelStart = (i * width + j) * channelCount;
       const uint32_t rIndex = pixelStart + redChannel;
       const uint32_t gIndex = pixelStart + greenChannel;
       const uint32_t bIndex = pixelStart + blueChannel;
+      const uint32_t aIndex = pixelStart + alphaChannel;
       m_Buffer[rIndex] = Float2UChar(color[0]);
-      m_Buffer[gIndex] = Float2UChar(color.G);
-      m_Buffer[bIndex] = Float2UChar(color.B);
+      m_Buffer[gIndex] = Float2UChar(color.g);
+      m_Buffer[bIndex] = Float2UChar(color.b);
+      m_Buffer[aIndex] = Float2UChar(color.a);
     }
   }
 
