@@ -29,7 +29,7 @@ private:
 private:
   uint32_t m_Width, m_Height;
   uint32_t m_PixelSize;
-  Scope<float[]> m_DepthBuffer;
-  Scope<Vec4[]> m_ColorBuffer;
+  Scope<float[]> m_DepthAttachment;
+  Scope<Vec4[]> m_ColorAttachment;
 };
 } // namespace Rasterization

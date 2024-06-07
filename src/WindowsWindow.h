@@ -18,7 +18,7 @@ public:
 
   virtual bool Closed() const override { return m_Closed; };
 
-  virtual void DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) override;
+  virtual void DrawFrameBuffer(const Ref<FrameBuffer>) override;
 
   virtual void PollInputEvents() override;
 

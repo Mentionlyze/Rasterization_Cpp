@@ -3,9 +3,13 @@
 
 namespace Rasterization {
 
+Application *Application::s_Instance = nullptr;
+
 Application::Application(const std::string &title, const uint32_t width,
                          const uint32_t height)
     : m_Title{title}, m_Width{width}, m_Height{height} {
+  ASSERT(!s_Instance);
+  s_Instance = this;
   Init();
 }
 
@@ -13,15 +17,6 @@ Application::~Application() { Terminate(); }
 
 void Application::Init() {
   m_Window = Window::Create(m_Title, m_Width, m_Height);
-}
-
-void Application::Run() {
-
-  while (!m_Window->Closed()) {
-    OnUpdate();
-
-    m_Window->PollInputEvents();
-  }
 }
 
 void Application::Terminate() { m_Window->Terminate(); }

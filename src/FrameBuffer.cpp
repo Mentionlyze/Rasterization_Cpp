@@ -5,8 +5,8 @@ FrameBuffer::FrameBuffer(const uint32_t width, const uint32_t height)
     : m_Width(width), m_Height(height), m_PixelSize(width * height) {
   ASSERT(width > 0 && height > 0);
 
-  m_DepthBuffer = CreateScope<float[]>(m_PixelSize);
-  m_ColorBuffer = CreateScope<Vec4[]>(m_PixelSize);
+  m_DepthAttachment = CreateScope<float[]>(m_PixelSize);
+  m_ColorAttachment = CreateScope<Vec4[]>(m_PixelSize);
 }
 
 FrameBuffer::~FrameBuffer() {}
@@ -15,7 +15,7 @@ void FrameBuffer::SetColor(const uint32_t x, const uint32_t y,
                            const Vec4 &color) const {
   auto index = GetPixelIndex(x, y);
   if (index < m_PixelSize && index >= 0) {
-    m_ColorBuffer[index] = color;
+    m_ColorAttachment[index] = color;
   } else {
     ASSERT(false);
   }
@@ -24,7 +24,7 @@ void FrameBuffer::SetColor(const uint32_t x, const uint32_t y,
 Vec4 FrameBuffer::GetColor(const uint32_t x, const uint32_t y) const {
   auto index = GetPixelIndex(x, y);
   if (index < m_PixelSize && index >= 0) {
-    return m_ColorBuffer[index];
+    return m_ColorAttachment[index];
   } else {
     ASSERT(false);
     return Vec4();
@@ -35,7 +35,7 @@ void FrameBuffer::SetDepth(const uint32_t x, const uint32_t y,
                            const float depth) const {
   auto index = GetPixelIndex(x, y);
   if (index < m_PixelSize && index >= 0) {
-    m_DepthBuffer[index] = depth;
+    m_DepthAttachment[index] = depth;
   } else {
     ASSERT(false);
   }
@@ -44,7 +44,7 @@ void FrameBuffer::SetDepth(const uint32_t x, const uint32_t y,
 float FrameBuffer::GetDepth(const uint32_t x, const uint32_t y) const {
   auto index = GetPixelIndex(x, y);
   if (index < m_PixelSize && index >= 0) {
-    return m_DepthBuffer[index];
+    return m_DepthAttachment[index];
   } else {
     ASSERT(false);
     return 0.0f;
@@ -53,13 +53,13 @@ float FrameBuffer::GetDepth(const uint32_t x, const uint32_t y) const {
 
 void FrameBuffer::Clear(const Vec4 &color) {
   for (uint32_t i = 0; i < m_PixelSize; i++) {
-    m_ColorBuffer[i] = color;
+    m_ColorAttachment[i] = color;
   }
 }
 
 void FrameBuffer::ClearDepth(float depth) {
   for (uint32_t i = 0; i < m_PixelSize; i++) {
-    m_DepthBuffer[i] = depth;
+    m_DepthAttachment[i] = depth;
   }
 }
 } // namespace Rasterization
