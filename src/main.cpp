@@ -11,8 +11,8 @@ int main() {
   auto renderer = Rasterization::CreateRef<Rasterization::Renderer>(
       VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
   app->Run([renderer]() {
-    renderer->Clear({0.5f, 0.7f, 0.5f, 1.0f});
-    renderer->ClearDepth();
+    renderer->Clear({0.0f, 0.0f, 0.0f, 1.0f});
+    renderer->ClearDepth(1.0);
     Rasterization::Application::SwapBuffers(renderer);
   });
   delete app;
