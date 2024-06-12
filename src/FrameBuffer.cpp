@@ -1,4 +1,5 @@
 #include "FrameBuffer.h"
+#include "Math.h"
 
 namespace Rasterization {
 FrameBuffer::FrameBuffer(const uint32_t width, const uint32_t height)
@@ -16,6 +17,16 @@ void FrameBuffer::SetColor(const uint32_t x, const uint32_t y,
   auto index = GetPixelIndex(x, y);
   if (index < m_PixelSize && index >= 0) {
     m_ColorAttachment[index] = color;
+  } else {
+    ASSERT(false);
+  }
+}
+
+void FrameBuffer::SetColor(const uint32_t x, const uint32_t y,
+                           const Vec3 &color) const {
+  auto index = GetPixelIndex(x, y);
+  if (index < m_PixelSize && index >= 0) {
+    m_ColorAttachment[index] = Vec4{color};
   } else {
     ASSERT(false);
   }

@@ -119,7 +119,8 @@ void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {
       constexpr uint32_t greenChannel = 1;
       constexpr uint32_t blueChannel = 0;
 
-      auto color = frameBuffer->GetColor(j, height - 1 - i);
+      auto color = frameBuffer->GetColor(j, i);
+      // auto color = frameBuffer->GetColor(j, height - 1 - i);
       const uint32_t pixelStart = (i * width + j) * channelCount;
       const uint32_t rIndex = pixelStart + redChannel;
       const uint32_t gIndex = pixelStart + greenChannel;

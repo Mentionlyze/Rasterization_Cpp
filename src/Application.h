@@ -22,6 +22,7 @@ public:
   inline static Application &Get() { return *s_Instance; }
 
   inline static void SwapBuffers(Ref<Renderer> renderer) {
+    auto test = renderer.get()->GetFrameBuffer()->GetColor(300, 500);
     Application::Get().m_Window->DrawFrameBuffer(renderer->GetFrameBuffer());
   }
 

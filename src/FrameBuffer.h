@@ -13,6 +13,7 @@ public:
   uint32_t GetHeight() const { return m_Height; }
 
   void SetColor(const uint32_t x, const uint32_t y, const Vec4 &color) const;
+  void SetColor(const uint32_t x, const uint32_t y, const Vec3 &color) const;
   Vec4 GetColor(const uint32_t x, const uint32_t y) const;
 
   void SetDepth(const uint32_t x, const uint32_t y, const float depth) const;

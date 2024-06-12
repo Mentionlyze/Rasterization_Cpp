@@ -14,6 +14,11 @@ public:
 
   void ClearDepth(const float depth) { m_FrameBuffer->ClearDepth(depth); }
 
+  void DrawLine(const int32_t x0, const int32_t y0, const int32_t x1,
+                const int32_t y1, const Vec4 &color);
+  void DrawLine(const int32_t x0, const int32_t y0, const int32_t x1,
+                const int32_t y1, const Vec3 &color);
+
 private:
   Ref<FrameBuffer> m_FrameBuffer;
 };
