@@ -21,6 +21,13 @@ struct Vec3 {
     return set[index];
   }
 
+  void operator/(float w) {
+    x /= w;
+    y /= w;
+    z /= w;
+    w /= w;
+  }
+
   friend std::ostream &operator<<(std::ostream &out, const Vec3 &vec3) {
     return out << "vec3(" << vec3.x << "," << vec3.y << "," << vec3.z << ")";
   }
@@ -49,6 +56,10 @@ struct Vec4 {
     return out << "vec4(" << vec4.x << "," << vec4.y << "," << vec4.z << ","
                << vec4.w << ")";
   }
+};
+
+struct Mat3 {
+  constexpr Mat3() {}
 };
 
 unsigned char Float2UChar(const float f);

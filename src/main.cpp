@@ -16,7 +16,7 @@ int main() {
 
     renderer->DrawLine(0, 0, 100, 300, {0.2f, 0.9f, 0.0f, 1.0f});
     renderer->DrawLine(0, 0, 300, 100, {0.2f, 0.9f, 0.0f, 1.0f});
-    renderer->DrawLine(200, 300, 0, 0, {0.2f, 0.8f, 0.0f, 1.0f});
+    renderer->DrawLine(200, 300, 50, 120, {0.2f, 0.8f, 0.0f, 1.0f});
     // renderer->GetFrameBuffer()->SetColor(20, 20, {0.5f, 0.2f, 0.0f, 1.0f});
     // renderer->GetFrameBuffer()->SetColor(20, 21, {0.5f, 0.2f, 0.0f, 1.0f});
     // renderer->GetFrameBuffer()->SetColor(21, 20, {0.5f, 0.2f, 0.0f, 1.0f});

@@ -12,6 +12,7 @@ project(
   VERSION 0.1.0
 )
 
+
 aux_source_directory(src SOURCE_FILES)
 file(GLOB_RECURSE HEADER_FILES "src/*.h(pp?)")
 
