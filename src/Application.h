@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Base.h"
 #include "Renderer.h"
 #include "Window.h"

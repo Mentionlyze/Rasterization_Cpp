@@ -8,7 +8,7 @@ Renderer::Renderer(const uint32_t width, const uint32_t height) {
 }
 
 void Renderer::DrawLine(const int32_t x0, const int32_t y0, const int32_t x1,
-                        const int32_t y1, const Vec4 &color) {
+                        const int32_t y1, const Math::Vec4 &color) {
   auto dx = std::abs(x1 - x0);
   auto dy = std::abs(y1 - y0);
   auto x_Step = x1 >= x0 ? 1 : -1;

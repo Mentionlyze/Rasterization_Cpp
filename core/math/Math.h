@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cstddef>
-#include <ostream>
-namespace Rasterization {
+#include <iostream>
+
+namespace Math {
 struct Vec3 {
   union {
     struct {
@@ -64,4 +64,4 @@ struct Mat3 {
 
 unsigned char Float2UChar(const float f);
 float UChar2Float(const unsigned char c);
-} // namespace Rasterization
+} // namespace Math

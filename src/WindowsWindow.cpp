@@ -1,6 +1,6 @@
 #include "WindowsWindow.h"
 #include "Base.h"
-#include "Math.h"
+#include "math/Math.h"
 #include <libloaderapi.h>
 #include <wingdi.h>
 #include <winuser.h>
@@ -125,9 +125,9 @@ void WindowsWindow::DrawFrameBuffer(const Ref<FrameBuffer> frameBuffer) {
       const uint32_t rIndex = pixelStart + redChannel;
       const uint32_t gIndex = pixelStart + greenChannel;
       const uint32_t bIndex = pixelStart + blueChannel;
-      m_Buffer[rIndex] = Float2UChar(color[0]);
-      m_Buffer[gIndex] = Float2UChar(color.g);
-      m_Buffer[bIndex] = Float2UChar(color.b);
+      m_Buffer[rIndex] = Math::Float2UChar(color[0]);
+      m_Buffer[gIndex] = Math::Float2UChar(color.g);
+      m_Buffer[bIndex] = Math::Float2UChar(color.b);
     }
   }
 

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Renderer.h"
+#include "math/Math.h"
 
 #define VIEWPORT_TITLE "Rasterization"
 #define VIEWPORT_WIDTH 1280

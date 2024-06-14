@@ -4,6 +4,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(
   rasterization
@@ -12,8 +13,9 @@ project(
   VERSION 0.1.0
 )
 
+add_subdirectory(core)
+add_subdirectory(src)
 
-aux_source_directory(src SOURCE_FILES)
-file(GLOB_RECURSE HEADER_FILES "src/*.h(pp?)")
+add_executable(rasterization main.cpp)
+target_link_libraries(rasterization PUBLIC renderer)
 
-add_executable(rasterization ${SOURCE_FILES} ${HEADER_FILES})
