@@ -9,7 +9,7 @@ public:
           const float far);
   ~Frustum() = default;
 
-  Ref<glm::mat4> GetMat() { return m_Mat; }
+  glm::mat4 &GetMat() { return *m_Mat; }
 
 private:
   float m_Fov, m_Aspect, m_Near, m_Far;

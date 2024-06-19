@@ -48,5 +48,6 @@ int main() {
 
     Rasterization::Application::SwapBuffers(renderer);
   });
+
   delete app;
 }

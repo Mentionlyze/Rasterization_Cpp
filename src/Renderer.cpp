@@ -1,11 +1,9 @@
 #include "Renderer.h"
-#include "glm/matrix.hpp"
 #include "math/CohenSutherland.h"
 #include <array>
 #include <cstdint>
 #include <iostream>
 #include <tuple>
-#include <vector>
 
 namespace Rasterization {
 
@@ -23,12 +21,15 @@ void Renderer::DrawTriangle(const glm::mat4 model,
   std::array<glm::vec2, 3> result;
   for (uint32_t i = 0; i < 3; i++) {
 
-    auto v = *m_Camera->GetFrustum()->GetMat() * model *
-             glm::vec4{vertices[i], 1.0f};
+    auto frustumMat = m_Camera->GetFrustum()->GetMat();
 
-    v /= v.w;
+    auto mvp = frustumMat * model;
 
-    auto v2 = glm::vec2{(v.x + 1.0f) * 0.5f * (m_ViewPort.w - 1) + m_ViewPort.x,
+    auto v = mvp * glm::vec4{vertices[i], 1.0f};
+
+    v = 1 / v.w * v;
+
+    auto v2 = glm::vec2{(v.x + 1.0) * 0.5 * (m_ViewPort.w - 1) + m_ViewPort.x,
                         m_ViewPort.h - (v.y + 1.0f) * (m_ViewPort.h - 1) +
                             m_ViewPort.y};
 
@@ -36,6 +37,7 @@ void Renderer::DrawTriangle(const glm::mat4 model,
   }
 
   for (uint32_t i = 0; i < 3; i++) {
+    DrawLine(result[i], result[i + i % 3], color);
   }
 }
 
