@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "glm/ext/vector_float4.hpp"
 #include "thirdparty/glm/glm/fwd.hpp"
+#include <array>
 
 #define VIEWPORT_TITLE "Rasterization"
 #define VIEWPORT_WIDTH 1280
@@ -18,8 +19,22 @@ int main() {
     renderer->Clear({0.0f, 0.0f, 0.0f, 1.0f});
     renderer->ClearDepth(1.0);
 
-    renderer->DrawLine(glm::vec2{0.0f, 0.0f}, glm::vec2{200.0f, 200.0f},
+    renderer->DrawLine({-100.0f, 0.0f}, {100.0f, 0.0f},
                        {0.2f, 0.9f, 0.0f, 1.0f});
+
+    renderer->DrawLine({0.0f, -100.0f}, {0.0f, 100.0f},
+                       {0.2f, 0.9f, 0.0f, 1.0f});
+
+    renderer->DrawLine({-100.0f, 2000.0f}, {200.0f, 500.0f},
+                       {0.2f, 0.9f, 0.0f, 1.0f});
+
+    glm::vec3 vertices[3] = {
+        glm::vec3{-1.0f, 1.0f, -2.0f},
+        glm::vec3{1.0f, 1.0f, -2.0f},
+        glm::vec3{0.0f, -1.0f, -2.0f},
+    };
+
+    renderer->DrawTriangle(glm::mat4(1.0f), vertices, {0.2f, 0.9f, 0.0f, 1.0f});
 
     // renderer->DrawLine({0.0, 0.0}, {200, 300}, {0.2f, 0.9f, 0.0f, 1.0f});
     // renderer->DrawLine(0, 0, 300, 100, glm::vec4{0.2f, 0.9f,

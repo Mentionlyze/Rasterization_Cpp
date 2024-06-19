@@ -1,22 +1,53 @@
 #include "Renderer.h"
+#include "glm/matrix.hpp"
 #include "math/CohenSutherland.h"
+#include <array>
 #include <cstdint>
 #include <iostream>
 #include <tuple>
+#include <vector>
 
 namespace Rasterization {
 
 Renderer::Renderer(const int32_t width, const int32_t height)
     : m_Width{width}, m_Height{height} {
   m_FrameBuffer = CreateRef<FrameBuffer>(width, height);
+  m_Camera =
+      CreateRef<Camera>(glm::radians(45.0f), width / height, 1.0f, 100.0f);
+  m_ViewPort = ViewPort{0, 0, width, height};
 }
 
-void Renderer::DrawLine(glm::vec2 point_1, glm::vec2 point_2,
+void Renderer::DrawTriangle(const glm::mat4 model,
+                            const glm::vec3 (&vertices)[3],
+                            const glm::vec4 &color) {
+  std::array<glm::vec2, 3> result;
+  for (uint32_t i = 0; i < 3; i++) {
+
+    auto v = *m_Camera->GetFrustum()->GetMat() * model *
+             glm::vec4{vertices[i], 1.0f};
+
+    v /= v.w;
+
+    auto v2 = glm::vec2{(v.x + 1.0f) * 0.5f * (m_ViewPort.w - 1) + m_ViewPort.x,
+                        m_ViewPort.h - (v.y + 1.0f) * (m_ViewPort.h - 1) +
+                            m_ViewPort.y};
+
+    result[i] = v2;
+  }
+
+  for (uint32_t i = 0; i < 3; i++) {
+  }
+}
+
+void Renderer::DrawLine(const glm::vec2 &point_1, const glm::vec2 &point_2,
                         const glm::vec4 &color) {
 
+  glm::vec2 point_start = glm::vec2{point_1.x, point_1.y};
+  glm::vec2 point_end = glm::vec2{point_2.x, point_2.y};
+
   auto result = CohenSutherland::CohenSutherlandLineClip(
-      point_1, point_2, glm::vec2{0.0f},
-      glm::vec2{(float)m_Width, (float)m_Height});
+      point_start, point_end, glm::vec2{0.0f},
+      glm::vec2{(float)m_Width - 1, (float)m_Height - 1});
 
   if (result) {
     glm::vec2 p1, p2;
