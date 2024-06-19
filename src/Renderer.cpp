@@ -10,8 +10,10 @@ namespace Rasterization {
 Renderer::Renderer(const int32_t width, const int32_t height)
     : m_Width{width}, m_Height{height} {
   m_FrameBuffer = CreateRef<FrameBuffer>(width, height);
-  m_Camera =
-      CreateRef<Camera>(glm::radians(45.0f), width / height, 1.0f, 100.0f);
+
+  float aspect = (float)width / (float)height;
+
+  m_Camera = CreateRef<Camera>(glm::radians(45.0f), aspect, 0.1f, 100.0f);
   m_ViewPort = ViewPort{0, 0, width, height};
 }
 
@@ -23,9 +25,15 @@ void Renderer::DrawTriangle(const glm::mat4 model,
 
     auto frustumMat = m_Camera->GetFrustum()->GetMat();
 
-    auto mvp = frustumMat * model;
+    glm::mat4 mvp = frustumMat * model;
 
-    auto v = mvp * glm::vec4{vertices[i], 1.0f};
+    std::cout << vertices[i].x << "\n";
+
+    glm::vec4 vertice = glm::vec4{vertices[i], 1.0f};
+
+    std::cout << vertice.x << "\n";
+
+    glm::vec4 v = mvp * vertice;
 
     v = 1 / v.w * v;
 
@@ -37,7 +45,7 @@ void Renderer::DrawTriangle(const glm::mat4 model,
   }
 
   for (uint32_t i = 0; i < 3; i++) {
-    DrawLine(result[i], result[i + i % 3], color);
+    DrawLine(result[i], result[(i + 1) % 3], color);
   }
 }
 
