@@ -17,14 +17,14 @@ template <typename T = float> struct Vec2 {
   };
 
 private:
-  T m_Set[2];
+  T m_Data[2];
 
 public:
-  constexpr Vec2(T x, T y, T z) : x{x}, y{y}, m_Set{x, y} {}
-  constexpr Vec2(T x) : x{x}, y{x}, m_Set{x, y} {}
-  constexpr Vec2() : x{0.0f}, y{0.0f}, m_Set{x, y} {}
+  constexpr Vec2(T x, T y, T z) : x{x}, y{y}, m_Data{x, y} {}
+  constexpr Vec2(T x) : x{x}, y{x}, m_Data{x, y} {}
+  constexpr Vec2() : x{0.0f}, y{0.0f}, m_Data{x, y} {}
 
-  T operator[](size_t index) { return m_Set[index]; }
+  T operator[](size_t index) { return m_Data[index]; }
 
   friend std::ostream &operator<<(std::ostream &out, const Vec2 &v) {
     return out << "vec2(" << v.x << "," << v.y << ")";
@@ -42,16 +42,16 @@ struct Vec3 {
   };
 
 private:
-  float m_Set[3];
+  float m_Data[3];
 
 public:
   constexpr Vec3(float x, float y, float z)
-      : x{x}, y{y}, z{z}, m_Set{x, y, z} {}
-  constexpr Vec3(float x) : x{x}, y{x}, z{x}, m_Set{x, y, z} {}
-  constexpr Vec3() : x{0.0f}, y{0.0f}, z{0.0f}, m_Set{x, y, z} {}
-  constexpr Vec3(const Vec2<> &v) : x{v.x}, y{v.y}, z{0.0f}, m_Set{x, y, z} {}
+      : x{x}, y{y}, z{z}, m_Data{x, y, z} {}
+  constexpr Vec3(float x) : x{x}, y{x}, z{x}, m_Data{x, y, z} {}
+  constexpr Vec3() : x{0.0f}, y{0.0f}, z{0.0f}, m_Data{x, y, z} {}
+  constexpr Vec3(const Vec2<> &v) : x{v.x}, y{v.y}, z{0.0f}, m_Data{x, y, z} {}
 
-  float operator[](size_t index) { return m_Set[index]; }
+  float operator[](size_t index) { return m_Data[index]; }
 
   friend std::ostream &operator<<(std::ostream &out, const Vec3 &v) {
     return out << "vec3(" << v.x << "," << v.y << "," << v.z << ")";
@@ -104,17 +104,17 @@ struct Vec4 {
   };
 
 private:
-  float m_Set[4];
+  float m_Data[4];
 
 public:
   constexpr Vec4(float x, float y, float z, float w)
-      : x{x}, y{y}, z{z}, w{w}, m_Set{x, y, z, w} {}
-  constexpr Vec4(float x) : x{x}, y{x}, z{x}, w{1.0f}, m_Set{x, y, z, w} {}
+      : x{x}, y{y}, z{z}, w{w}, m_Data{x, y, z, w} {}
+  constexpr Vec4(float x) : x{x}, y{x}, z{x}, w{1.0f}, m_Data{x, y, z, w} {}
   constexpr Vec4(const Vec3 &vec3)
-      : x{vec3.x}, y{vec3.y}, z{vec3.z}, w{1.0f}, m_Set{x, y, z, w} {}
-  constexpr Vec4() : x{0.0f}, y{0.0f}, z{0.0f}, w{1.0f}, m_Set{x, y, z, w} {}
+      : x{vec3.x}, y{vec3.y}, z{vec3.z}, w{1.0f}, m_Data{x, y, z, w} {}
+  constexpr Vec4() : x{0.0f}, y{0.0f}, z{0.0f}, w{1.0f}, m_Data{x, y, z, w} {}
 
-  float operator[](size_t index) { return m_Set[index]; }
+  float operator[](size_t index) { return m_Data[index]; }
 
   friend std::ostream &operator<<(std::ostream &out, const Vec4 &vec4) {
     return out << "vec4(" << vec4.x << "," << vec4.y << "," << vec4.z << ","
@@ -124,37 +124,28 @@ public:
 
 struct Mat4 {
 private:
-  float m_Set[16];
+  float m_Data[16];
 
 public:
   // clang-format off
   constexpr Mat4(float a, float b, float c, float d, float e, float f, float g,
                  float h, float i, float j, float k, float l, float m, float n,
                  float o, float p)
-      : m_Set{
+      : m_Data{
              a, e, i, m,
              b, f, j, n,
              c, g,k,o,
             d,h,l,p,
         } {};
   constexpr Mat4()
-      : m_Set{ 1.0f,  0.0f,  0.0f,  0.0f, 
+      : m_Data{ 1.0f,  0.0f,  0.0f,  0.0f, 
                0.0f,  1.0f,  0.0f,  0.0f,
                0.0f,  0.0f, 1.0f, 0.0f, 
               0.0f, 0.0f, 0.0f, 1.0f} {}
   // clang-format on
 
-  float operator[](size_t index) { return m_Set[index]; }
-
-  // clang-format off
-  Mat4 operator*(const Mat4 &m) {
-    return Mat4{
-
-    };
-  }
-
+  float operator[](size_t index) { return m_Data[index]; }
   // clang-format on
-  Vec4 operator*(const Vec4 &v) {}
 };
 
 unsigned char Float2UChar(const float f);

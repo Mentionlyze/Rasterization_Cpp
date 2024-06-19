@@ -13,9 +13,11 @@ project(
   VERSION 0.1.0
 )
 
-add_subdirectory(core)
-add_subdirectory(src)
-
 add_executable(rasterization main.cpp)
-target_link_libraries(rasterization PUBLIC renderer)
+message(${PROJECT_SOURCE_DIR}/thirdparty/glm)
+target_include_directories(rasterization PUBLIC ${PROJECT_SOURCE_DIR}/thirdparty/glm)
 
+add_subdirectory(src)
+add_subdirectory(core)
+
+target_link_libraries(rasterization PUBLIC renderer)

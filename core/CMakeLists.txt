@@ -5,4 +5,7 @@ file(GLOB_RECURSE MATH_SOURCE_FILES "*.cpp")
 
 
 add_library(core ${MATH_SOURCE_FILES})
+
+target_include_directories(core PUBLIC ${PROJECT_SOURCE_DIR}/thirdparty/glm)
+
 target_include_directories(core INTERFACE .)

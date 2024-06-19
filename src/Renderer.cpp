@@ -1,14 +1,36 @@
 #include "Renderer.h"
-#include <utility>
+#include "math/CohenSutherland.h"
+#include <cstdint>
+#include <iostream>
+#include <tuple>
 
 namespace Rasterization {
 
-Renderer::Renderer(const uint32_t width, const uint32_t height) {
+Renderer::Renderer(const int32_t width, const int32_t height)
+    : m_Width{width}, m_Height{height} {
   m_FrameBuffer = CreateRef<FrameBuffer>(width, height);
 }
 
-void Renderer::DrawLine(const int32_t x0, const int32_t y0, const int32_t x1,
-                        const int32_t y1, const Math::Vec4 &color) {
+void Renderer::DrawLine(glm::vec2 point_1, glm::vec2 point_2,
+                        const glm::vec4 &color) {
+
+  auto result = CohenSutherland::CohenSutherlandLineClip(
+      point_1, point_2, glm::vec2{0.0f},
+      glm::vec2{(float)m_Width, (float)m_Height});
+
+  if (result) {
+    glm::vec2 p1, p2;
+    std::tie(p1, p2) = result.value();
+    DrawLineWithoutClip((int32_t)p1.x, (int32_t)p1.y, (int32_t)p2.x,
+                        (int32_t)p2.y, color);
+  } else {
+    std::cout << "No valid tuple result" << "\n";
+  }
+}
+
+void Renderer::DrawLineWithoutClip(const int32_t x0, const int32_t y0,
+                                   const int32_t x1, const int32_t y1,
+                                   const glm::vec4 &color) {
   auto dx = std::abs(x1 - x0);
   auto dy = std::abs(y1 - y0);
   auto x_Step = x1 >= x0 ? 1 : -1;
