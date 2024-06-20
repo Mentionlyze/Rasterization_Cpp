@@ -1,11 +1,8 @@
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB_RECURSE MATH_SOURCE_FILES "*.cpp")
+file(GLOB_RECURSE CORE_SOURCE_FILES "*.cpp")
 
+add_library(core ${CORE_SOURCE_FILES})
 
-add_library(core ${MATH_SOURCE_FILES})
-
-target_include_directories(core PUBLIC ${PROJECT_SOURCE_DIR}/thirdparty/glm)
-
-target_include_directories(core INTERFACE .)
+target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)

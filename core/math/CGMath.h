@@ -1,0 +1,653 @@
+#pragma once
+
+#include "base/Base.h"
+#include <cstdint>
+#include <initializer_list>
+#include <ostream>
+#include <type_traits>
+namespace CGMath {
+
+constexpr float PI = static_cast<float>(3.14159265358979);
+// clang-format off
+
+template <typename T>
+using MustArithmetic = std::enable_if<std::is_arithmetic_v<T>>;
+
+template <typename T>
+T Rad2Deg(T radians) {
+    return radians * 180.0 / PI;
+}
+
+template <typename T>
+T Deg2Rad(T degrees) {
+    return static_cast<T>(degrees * PI / 180.0);
+}
+
+template <typename T, uint32_t N> 
+class Vec;
+
+template <typename T, uint32_t Col, uint32_t Row, typename> 
+class Mat;
+
+using Vec2 = Vec<float, 2>;
+using Vec3 = Vec<float, 3>;
+using Vec4 = Vec<float, 4>;
+using Color = Vec4;
+
+template <typename T, uint32_t N>
+std::ostream& operator<<(std::ostream& o, const Vec<T, N> &v) {
+  o << "Vec" << N << "[ ";
+  for(int i = 0; i < N; i++) {
+    o << v.data[i] << " ";
+  }
+  o << "]";
+  return o;
+}
+
+// clang-format on
+template <typename T, uint32_t N>
+Vec<T, N> operator+(const Vec<T, N> &v1, const Vec<T, N> &v2);
+
+template <typename T, uint32_t N>
+Vec<T, N> operator-(const Vec<T, N> &v1, const Vec<T, N> &v2);
+
+template <typename T, typename U, uint32_t N, typename = MustArithmetic<U>>
+Vec<T, N> operator*(U, const Vec<T, N> &v);
+
+template <typename T, typename U, uint32_t N, typename = MustArithmetic<U>>
+Vec<T, N> operator*(const Vec<T, N> &v, U);
+
+template <typename T, typename U, uint32_t N, typename = MustArithmetic<U>>
+Vec<T, N> operator/(const Vec<T, N> &v, U);
+
+template <typename T, uint32_t N>
+Vec<T, N> operator*(const Vec<T, N> &v1, const Vec<T, N> &v2);
+
+template <typename T, uint32_t N>
+Vec<T, N> operator/(const Vec<T, N> &v1, const Vec<T, N> &v2);
+
+template <typename T, uint32_t N> T lengthSqrd(const Vec<T, N> &v);
+template <typename T, uint32_t N> T length(const Vec<T, N> &v);
+
+template <typename T> T Cross(const Vec<T, 2> &v1, const Vec<T, 2> &v2);
+template <typename T> T Cross(const Vec<T, 2> &v1, const Vec<T, 2> &v2);
+template <typename T> Vec<T, 3> Cross(const Vec<T, 3> &v1, const Vec<T, 3> &v2);
+template <typename T, uint32_t N> Vec<T, N> Normalize(const Vec<T, N> &v);
+
+template <typename T, uint32_t N>
+Vec<T, N> operator+(const Vec<T, N> &v1, const Vec<T, N> &v2) {
+  Vec<T, N> result;
+  for (uint32_t i = 0; i < N; i++) {
+    result.data[i] = v1.data[i] + v2.data[i];
+  }
+  return result;
+}
+
+template <typename T, uint32_t N>
+Vec<T, N> operator-(const Vec<T, N> &v1, const Vec<T, N> &v2) {
+  Vec<T, N> result;
+  for (uint32_t i = 0; i < N; i++) {
+    result.data[i] = v1.data[i] - v2.data[i];
+  }
+  return result;
+}
+
+template <typename T, uint32_t N>
+Vec<T, N> operator*(const Vec<T, N> &v1, const Vec<T, N> &v2) {
+  Vec<T, N> result;
+  for (uint32_t i = 0; i < N; i++) {
+    result.data[i] = v1.data[i] * v2.data[i];
+  }
+  return result;
+}
+
+template <typename T, typename U, uint32_t N, typename>
+Vec<T, N> operator*(U value, const Vec<T, N> &v) {
+  Vec<T, N> result;
+  for (uint32_t i = 0; i < N; i++) {
+    result.data[i] = v.data[i] * value;
+  }
+  return result;
+}
+
+template <typename T, typename U, uint32_t N, typename>
+Vec<T, N> operator*(const Vec<T, N> &v, U value) {
+  return value * v;
+}
+
+template <typename T, uint32_t N>
+Vec<T, N> operator/(const Vec<T, N> &v1, const Vec<T, N> &v2) {
+  Vec<T, N> result;
+  for (uint32_t i = 0; i < N; i++) {
+    result.data[i] = v1.data[i] / v2.data[i];
+  }
+  return result;
+}
+
+template <typename T, typename U, uint32_t N, typename>
+Vec<T, N> operator/(const Vec<T, N> &v, U value) {
+  Vec<T, N> result;
+  for (uint32_t i = 0; i < N; i++) {
+    result.data[i] = v.data[i] / value;
+  }
+  return result;
+}
+
+template <typename T, uint32_t N>
+T Dot(const Vec<T, N> &v1, const Vec<T, N> &v2) {
+  T sum{};
+  for (uint32_t i = 0; i < N; i++) {
+    sum += v1.data[i] * v2.data[i];
+  }
+  return sum;
+}
+
+template <typename T, uint32_t N>
+bool operator==(const Vec<T, N> &v1, const Vec<T, N> &v2) {
+  for (uint32_t i = 0; i < N; i++) {
+    if (v1.data[i] != v2.data[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+template <typename T, uint32_t N>
+bool operator!=(const Vec<T, N> &v1, const Vec<T, N> &v2) {
+  return !(v1 == v2);
+}
+
+template <typename T> T Cross(const Vec<T, 2> &v1, const Vec<T, 2> &v2) {
+  return v1.x * v2.y - v1.y * v2.x;
+}
+
+template <typename T>
+Vec<T, 3> Cross(const Vec<T, 3> &v1, const Vec<T, 3> &v2) {
+  Vec<T, 3> result;
+  result.x = v1.y * v2.z - v1.z * v2.y;
+  result.y = v1.z * v2.x - v1.x * v2.z;
+  result.z = v1.x * v2.y - v1.y * v2.x;
+  return result;
+}
+
+template <typename T, uint32_t N> T LengthSqrd(const Vec<T, N> &v) {
+  return Dot(v, v);
+}
+
+template <typename T, uint32_t N> T Length(const Vec<T, N> &v) {
+  return std::sqrt(LengthSqrd(v));
+}
+
+template <typename T, uint32_t N> Vec<T, N> Normalize(const Vec<T, N> &v) {
+  return v / Length(v);
+}
+
+// vec class
+template <typename T, uint32_t N> struct CommonVecOperations {
+  using underlying_type = Vec<T, N>;
+
+  T Dot(const underlying_type &o) const {
+    return Dot(static_cast<const underlying_type &>(*this), o);
+  }
+
+  T operator[](uint32_t idx) const {
+    return static_cast<const underlying_type &>(*this).data[idx];
+  }
+
+  T &operator[](uint32_t idx) {
+    return static_cast<underlying_type &>(*this).data[idx];
+  }
+
+  underlying_type operator-() const {
+    underlying_type result;
+    for (uint32_t i = 0; i < N; i++) {
+      result.data[i] = -static_cast<const underlying_type &>(*this).data[i];
+    }
+    return result;
+  }
+
+  underlying_type &operator+=(const underlying_type &o) {
+    auto &v = static_cast<underlying_type &>(*this);
+    v = v + o;
+    return v;
+  }
+
+  underlying_type &operator-=(const underlying_type &o) {
+    auto &v = static_cast<underlying_type &>(*this);
+    v = v - o;
+    return v;
+  }
+
+  underlying_type &operator*=(const underlying_type &o) {
+    auto &v = static_cast<underlying_type &>(*this);
+    v = v * o;
+    return v;
+  }
+
+  underlying_type &operator/=(const underlying_type &o) {
+    auto &v = static_cast<underlying_type &>(*this);
+    v = v / o;
+    return v;
+  }
+
+  underlying_type &operator*=(T value) {
+    auto &v = static_cast<underlying_type &>(*this);
+    v = v * value;
+    return v;
+  }
+
+  underlying_type &operator/=(T value) {
+    auto &v = static_cast<underlying_type &>(*this);
+    v = v / value;
+    return v;
+  }
+
+  T LengthSqrd() const {
+    return LengthSqrd(static_cast<const underlying_type &>(*this));
+  }
+
+  T Length() const {
+    return Length(static_cast<const underlying_type &>(*this));
+  }
+
+  void Normalize() {
+    static_cast<underlying_type &>(*this) =
+        Normalize(static_cast<const underlying_type &>(*this));
+  }
+
+  underlying_type &operator=(const underlying_type &o) {
+    auto &v = static_cast<underlying_type &>(*this);
+    for (uint32_t i = 0; i < N; i++) {
+      v.data[i] = o.data[i];
+    }
+    return v;
+  }
+};
+
+template <typename T, uint32_t N>
+class Vec final : public CommonVecOperations<T, N> {
+public:
+  T data[N];
+
+  Vec() { memset(data, 0, N); }
+
+  template <typename U, uint32_t N2> explicit Vec(const Vec<U, N2> &other) {
+    int i = 0;
+    for (; i < std::min(N, N2); i++) {
+      data[i] = static_cast<T>(other.data[i]);
+    }
+
+    while (i < N) {
+      data[i++] = T{};
+    }
+  }
+
+  Vec(const std::initializer_list<T> &initList) {
+    auto it = initList.begin();
+    uint32_t idx = 0;
+    while (it != initList.end() && idx < N) {
+      data[idx] = *it;
+      it++;
+      idx++;
+    }
+    while (idx < N) {
+      data[idx++] = 0;
+    }
+  }
+};
+
+template <typename T> class Vec<T, 2> final : public CommonVecOperations<T, 2> {
+public:
+  union {
+    struct {
+      T x, y;
+    };
+
+    struct {
+      T w, h;
+    };
+
+    T data[2];
+  };
+
+  Vec() : x{}, y{} {}
+
+  explicit Vec(T x) : x(x), y{} {}
+
+  template <typename U, uint32_t N2> explicit Vec(const Vec<U, N2> &other) {
+    x = other.data[0];
+    y = other.data[1];
+  }
+
+  Vec(T x, T y) : x(x), y(y) {}
+
+  Vec(const Vec &) = default;
+  Vec &operator=(const Vec &) = default;
+
+  void Set(T x, T y) {
+    this->x = x;
+    this->y = y;
+  }
+
+  auto Cross(const Vec<T, 2> &o) const { return Cross(*this, o); }
+};
+
+template <typename T> class Vec<T, 3> final : public CommonVecOperations<T, 3> {
+public:
+  union {
+    struct {
+      T x, y, z;
+    };
+
+    struct {
+      T r, s, t;
+    };
+
+    T data[3];
+  };
+
+  Vec() : x{}, y{}, z{} {}
+
+  template <typename U, uint32_t N2> explicit Vec(const Vec<U, N2> &other) {
+    Set(other);
+  }
+
+  explicit Vec(T x) : x(x), y{}, z{} {}
+
+  Vec(T x, T y) : x(x), y(y), z{} {}
+
+  Vec(T x, T y, T z) : x(x), y(y), z(z) {}
+
+  Vec(const Vec &) = default;
+  Vec &operator=(const Vec &) = default;
+
+  void Set(T x, T y, T z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
+
+  template <typename U, uint32_t N2> void Set(const Vec<U, N2> &other) {
+    x = other.data[0];
+    y = other.data[1];
+    z = N2 >= 3 ? other.data[2] : T{};
+  }
+
+  auto Cross(const Vec<T, 3> &o) const { return Cross(*this, o); }
+};
+
+template <typename T> class Vec<T, 4> final : public CommonVecOperations<T, 4> {
+public:
+  union {
+    struct {
+      T x, y, z, w;
+    };
+
+    struct {
+      T r, g, b, a;
+    };
+
+    T data[4];
+  };
+
+  Vec() : x{}, y{}, z{}, w{} {}
+
+  explicit Vec(T x) : x(x), y{}, z{}, w{} {}
+
+  template <typename U, uint32_t N2> explicit Vec(const Vec<U, N2> &other) {
+    Set(other);
+  }
+
+  Vec(T x, T y) : x(x), y(y), z{}, w{} {}
+
+  Vec(T x, T y, T z) : x(x), y(y), z(z), w{} {}
+
+  Vec(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
+
+  Vec(const Vec &) = default;
+  Vec &operator=(const Vec &) = default;
+
+  void Set(T x, T y, T z, T w) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    this->w = w;
+  }
+
+  template <typename U, uint32_t N2> void Set(const Vec<U, N2> &other) {
+    x = other.data[0];
+    y = other.data[1];
+    z = N2 >= 3 ? other.data[2] : T{};
+    w = N2 >= 4 ? other.data[3] : T{};
+  }
+};
+
+// basic mat class
+
+template <typename T, uint32_t Col, uint32_t Row,
+          typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+class Mat {
+public:
+  T data[Col * Row] = {T{}};
+
+  static Mat Zeros() {
+    Mat mat;
+    memset(mat.data, 0, sizeof(mat.data));
+    return mat;
+  }
+
+  static Mat FromCol(const std::initializer_list<Vec<T, Row>> &initVecs) {
+    Mat mat;
+    auto it = initVecs.begin();
+    uint32_t x = 0;
+    while (it != initVecs.end()) {
+      for (uint32_t y = 0; y < Row; y++) {
+        mat.Set(x, y, it->data[y]);
+      }
+      it++;
+      x++;
+    }
+    return mat;
+  }
+
+  static Mat FromRow(const std::initializer_list<Vec<T, Row>> &initVecs) {
+    Mat mat;
+    auto it = initVecs.begin();
+    uint32_t y = 0;
+    while (it != initVecs.end()) {
+      for (uint32_t x = 0; x < Col; x++) {
+        mat.Set(x, y, it->data[x]);
+      }
+      it++;
+      y++;
+    }
+    return mat;
+  }
+
+  static Mat FromCol(const std::initializer_list<T> &initList) {
+    auto it = initList.begin();
+    uint32_t idx = 0;
+    Mat m;
+
+    while (it != initList.end() && idx < Col * Row) {
+      m.Set(idx / Row, idx % Row, *it);
+      it++;
+      idx++;
+    }
+
+    return m;
+  }
+
+  static Mat FromRow(const std::initializer_list<T> &initList) {
+    auto it = initList.begin();
+    uint32_t idx = 0;
+    Mat m;
+
+    while (it != initList.end() && idx < Col * Row) {
+      m.Set(idx % Col, idx / Col, *it);
+      it++;
+      idx++;
+    }
+
+    return m;
+  }
+
+  static Mat Identity() {
+    static_assert(Row == Col);
+
+    Mat mat = Zeros();
+    for (int i = 0; i < Row; i++) {
+      mat.Set(i, i, 1);
+    }
+    return mat;
+  }
+
+  static Mat Ones() {
+    Mat mat;
+    memset(mat.data, 1, sizeof(mat.data));
+    return mat;
+  }
+
+  T &Get(int x, int y) {
+    ASSERT(x >= 0 && y >= 0 && x < Col && y < Row,
+           "access matrix out of bound");
+
+    return data[x + y * Col];
+  }
+
+  T Get(int x, int y) const {
+    ASSERT(x >= 0 && y >= 0 && x < Col && y < Row);
+
+    return data[x + y * Col];
+  }
+
+  void Set(int x, int y, T value) { Get(x, y) = value; }
+
+  constexpr int W() const { return Col; }
+
+  constexpr int H() const { return Row; }
+
+  Mat() = default;
+};
+
+template <typename T, uint32_t Common, uint32_t Mat1Row, uint32_t Mat2Col>
+Mat<T, Mat2Col, Mat1Row> operator*(const Mat<T, Common, Mat1Row> &m1,
+                                   const Mat<T, Mat2Col, Common> &m2) {
+  Mat<T, Mat2Col, Mat1Row> result = Mat<T, Mat2Col, Mat1Row>::Zeros();
+  for (uint32_t i = 0; i < Mat1Row; i++) {
+    for (uint32_t j = 0; j < Mat2Col; j++) {
+      T sum{};
+      for (uint32_t k = 0; k < Common; k++) {
+        sum += m1.Get(k, i) * m2.Get(j, k);
+      }
+      result.Set(j, i, sum);
+    }
+  }
+  return result;
+}
+
+template <typename T, typename U, uint32_t Col, uint32_t Row>
+Mat<T, Col, Row> operator*(const Mat<T, Col, Row> &m, U value) {
+  Mat<T, Col, Row> result = Mat<T, Col, Row>::Zeros();
+  for (uint32_t i = 0; i < Col * Row; i++) {
+    result.data[i] = m.data[i] * value;
+  }
+}
+
+template <typename T, typename U, uint32_t Col, uint32_t Row>
+Mat<T, Col, Row> operator*(U value, const Mat<T, Col, Row> &m) {
+  return m * value;
+}
+
+template <typename T, typename U, uint32_t Col, uint32_t Row>
+Mat<T, Col, Row> operator/(const Mat<T, Col, Row> &m, T value) {
+  Mat<T, Col, Row> result;
+  for (uint32_t i = 0; i < Col * Row; i++) {
+    result.data[i] = m.data[i] / value;
+  }
+  return result;
+}
+
+template <typename T, uint32_t Col, uint32_t Row>
+Mat<T, Col, Row> operator+(const Mat<T, Col, Row> &m1,
+                           const Mat<T, Col, Row> &m2) {
+  Mat<T, Col, Row> result = Mat<T, Col, Row>::Zeros();
+  for (uint32_t i = 0; i < Col * Row; i++) {
+    result.data[i] = m1.data[i] + m2.data[i];
+  }
+  return result;
+}
+
+template <typename T, uint32_t Col, uint32_t Row>
+Mat<T, Col, Row> operator-(const Mat<T, Col, Row> &m1,
+                           const Mat<T, Col, Row> &m2) {
+  Mat<T, Col, Row> result = Mat<T, Col, Row>::Zeros();
+  for (uint32_t i = 0; i < Col * Row; i++) {
+    result.data[i] = m1.data[i] - m2.data[i];
+  }
+  return result;
+}
+
+template <typename T, uint32_t Col, uint32_t Row>
+Vec<T, Col> operator*(const Mat<T, Col, Row> &m, const Vec<T, Col> &v) {
+  Vec<T, Col> result;
+  for (uint32_t i = 0; i < Row; i++) {
+    T sum{};
+    for (uint32_t j = 0; i < Col; j++) {
+      sum += m.Get(j, i) * v[j];
+    }
+    result.data[i] = sum;
+  }
+  return result;
+}
+
+template <typename T, uint32_t Col, uint32_t Row>
+auto Transpose(const Mat<T, Col, Row> &m) {
+  auto result = Mat<T, Col, Row>::Zeros();
+  for (uint32_t x = 0; x < Col; x++) {
+    for (uint32_t y = 0; y < Row; y++) {
+      result.Set(x, y, m.Get(y, x));
+    }
+  }
+  return result;
+}
+
+using Mat2 = Mat<float, 2, 2>;
+using Mat3 = Mat<float, 3, 3>;
+using Mat4 = Mat<float, 4, 4>;
+
+inline Mat4 CreatePersp(float fov, float aspect, float near, float far,
+                        bool GLCoord) {
+  float focal = 1.0 / std::tan(fov * 0.5);
+
+  // clang-format off
+  return Mat4::FromRow({
+    focal / aspect, 0,                          0,                          0,
+    0,              (GLCoord ? 1 : -1) *focal,  0,                          0,
+    0,              0,                         2.f * near / (far - near), 2.f * near * far / (far - near),
+   0,             0,                        -1,                         0,
+  });
+  // clang-format on
+}
+
+inline Mat4 CreateOrtho(float left, float right, float top, float bottom,
+                        float near, float far, bool GLCoord) {
+  // clang-format off
+  if (GLCoord) {
+    return Mat4::FromRow({
+      2.0f / (right - left),  0.0f,                   0.0f,                 (left + right) / (left - right),
+      0.0f,                   2.0f / (top - bottom),  0.0f,                 (bottom + top) / (bottom - top),
+      0.0f,                   0.0f,                  2.0f / (near - far), (near + far) / (far - near),
+     0.0f,                  0.0f,                  0.0f,                1.0f,
+    });
+  } else {
+    return Mat4::FromRow({
+      2.0f / (right - left),  0.0f,                   0.0f,                 (left + right) / (left - right),
+      0.0f,                  -2.0f / (top - bottom),  0.0f,                 (bottom + top) / (bottom - top),
+      0.0f,                   0.0f,                  1.0f / (near - far), far/ (far - near),
+     0.0f,                  0.0f,                  0.0f,                1.0f,
+    });
+  }
+  // clang-format on
+}
+} // namespace CGMath

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glm/glm.hpp"
+#include "math/CGMath.h"
 namespace Rasterization {
 class Frustum {
 public:
@@ -8,10 +8,10 @@ public:
           const float far);
   ~Frustum() = default;
 
-  glm::mat4 &GetMat() { return m_Mat; }
+  CGMath::Mat4 &GetMat() { return m_Mat; }
 
 private:
   float m_Fov, m_Aspect, m_Near, m_Far;
-  glm::mat4 m_Mat;
+  CGMath::Mat4 m_Mat;
 };
 } // namespace Rasterization

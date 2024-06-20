@@ -1,12 +1,12 @@
 #include "CohenSutherland.h"
-#include "glm/fwd.hpp"
 #include <optional>
 #include <tuple>
 
 namespace CohenSutherland {
 
-int const ComputeOutCode(const glm::vec2 &point, const glm::vec2 &rect_min,
-                         const glm::vec2 &rect_max) {
+int const ComputeOutCode(const CGMath::Vec2 &point,
+                         const CGMath::Vec2 &rect_min,
+                         const CGMath::Vec2 &rect_max) {
   auto code = 0;
 
   if (point.x < rect_min.x) {
@@ -23,9 +23,10 @@ int const ComputeOutCode(const glm::vec2 &point, const glm::vec2 &rect_min,
   return code;
 }
 
-std::optional<std::tuple<glm::vec2, glm::vec2>> const
-CohenSutherlandLineClip(glm::vec2 &point_1, glm::vec2 &point_2,
-                        const glm::vec2 &rect_min, const glm::vec2 &rect_max) {
+std::optional<std::tuple<CGMath::Vec2, CGMath::Vec2>> const
+CohenSutherlandLineClip(CGMath::Vec2 &point_1, CGMath::Vec2 &point_2,
+                        const CGMath::Vec2 &rect_min,
+                        const CGMath::Vec2 &rect_max) {
 
   auto outcode_1 = ComputeOutCode(point_1, rect_min, rect_max);
   auto outcode_2 = ComputeOutCode(point_2, rect_min, rect_max);
@@ -37,7 +38,7 @@ CohenSutherlandLineClip(glm::vec2 &point_1, glm::vec2 &point_2,
       return std::nullopt;
     } else {
 
-      auto p = glm::vec2{0.0f};
+      auto p = CGMath::Vec2{0.0f};
       auto outCodeOut = outcode_2 > outcode_1 ? outcode_2 : outcode_1;
 
       if (outCodeOut & OUTCODE::TOP) {

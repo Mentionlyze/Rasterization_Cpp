@@ -1,5 +1,4 @@
 #include "WindowsWindow.h"
-#include "Base.h"
 #include "math/Math.h"
 #include <libloaderapi.h>
 #include <wingdi.h>

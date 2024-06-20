@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Base.h"
 #include "Camera.h"
 #include "FrameBuffer.h"
 namespace Rasterization {
@@ -16,21 +15,19 @@ public:
 
   const Ref<FrameBuffer> GetFrameBuffer() { return m_FrameBuffer; }
 
-  void Clear(const glm::vec4 &color) { m_FrameBuffer->Clear(color); }
+  void Clear(const CGMath::Color &color) { m_FrameBuffer->Clear(color); }
 
   void ClearDepth(const float depth) { m_FrameBuffer->ClearDepth(depth); }
 
-  void DrawTriangle(const glm::mat4 model, const glm::vec3 (&vertices)[3],
-                    const glm::vec4 &color);
+  void DrawTriangle(const CGMath::Mat4 model, const CGMath::Vec3 (&vertices)[3],
+                    const CGMath::Color &color);
 
-  void DrawLine(const glm::vec2 &point_1, const glm::vec2 &point_2,
-                const glm::vec4 &color);
+  void DrawLine(const CGMath::Vec2 &point_1, const CGMath::Vec2 &point_2,
+                const CGMath::Color &color);
 
 private:
   void DrawLineWithoutClip(const int32_t x0, const int32_t y0, const int32_t x1,
-                           const int32_t y1, const glm::vec4 &color);
-  void DrawLineWithoutClip(const int32_t x0, const int32_t y0, const int32_t x1,
-                           const int32_t y1, const glm::vec3 &color);
+                           const int32_t y1, const CGMath::Color &color);
 
   int32_t m_Width, m_Height;
   Ref<FrameBuffer> m_FrameBuffer;
