@@ -6,13 +6,13 @@ FrameBuffer::FrameBuffer(const uint32_t width, const uint32_t height)
   ASSERT(width > 0 && height > 0);
 
   m_DepthAttachment = CreateScope<float[]>(m_PixelSize);
-  m_ColorAttachment = CreateScope<CGMath::Color[]>(m_PixelSize);
+  m_ColorAttachment = CreateScope<Math::Color[]>(m_PixelSize);
 }
 
 FrameBuffer::~FrameBuffer() {}
 
 void FrameBuffer::SetColor(const uint32_t x, const uint32_t y,
-                           const CGMath::Color &color) const {
+                           const Math::Color &color) const {
   auto index = GetPixelIndex(x, y);
   if (index < m_PixelSize && index >= 0) {
     m_ColorAttachment[index] = color;
@@ -21,13 +21,13 @@ void FrameBuffer::SetColor(const uint32_t x, const uint32_t y,
   }
 }
 
-CGMath::Color FrameBuffer::GetColor(const uint32_t x, const uint32_t y) const {
+Math::Color FrameBuffer::GetColor(const uint32_t x, const uint32_t y) const {
   auto index = GetPixelIndex(x, y);
   if (index < m_PixelSize && index >= 0) {
     return m_ColorAttachment[index];
   } else {
     ASSERT(false);
-    return CGMath::Color();
+    return Math::Color();
   }
 }
 
@@ -51,7 +51,7 @@ float FrameBuffer::GetDepth(const uint32_t x, const uint32_t y) const {
   }
 }
 
-void FrameBuffer::Clear(const CGMath::Color &color) {
+void FrameBuffer::Clear(const Math::Color &color) {
   for (uint32_t i = 0; i < m_PixelSize; i++) {
     m_ColorAttachment[i] = color;
   }

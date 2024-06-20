@@ -14,8 +14,6 @@ project(
 )
 
 add_executable(rasterization main.cpp)
-message(${PROJECT_SOURCE_DIR}/thirdparty/glm)
-target_include_directories(rasterization PUBLIC ${PROJECT_SOURCE_DIR}/thirdparty/glm)
 
 add_subdirectory(src)
 add_subdirectory(core)

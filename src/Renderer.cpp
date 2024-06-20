@@ -13,33 +13,34 @@ Renderer::Renderer(const int32_t width, const int32_t height)
 
   float aspect = (float)width / (float)height;
 
-  m_Camera = CreateRef<Camera>(CGMath::Deg2Rad(45.0f), aspect, 0.1f, 100.0f);
+  m_Camera = CreateRef<Camera>(Math::Deg2Rad(45.0f), aspect, 0.1f, 100.0f);
   m_ViewPort = ViewPort{0, 0, width, height};
 }
 
-void Renderer::DrawTriangle(const CGMath::Mat4 model,
-                            const CGMath::Vec3 (&vertices)[3],
-                            const CGMath::Color &color) {
-  std::array<CGMath::Vec2, 3> result;
+void Renderer::DrawTriangle(const Math::Mat4 &model,
+                            const Math::Vec3 (&vertices)[3],
+                            const Math::Color &color) {
+  std::array<Math::Vec2, 3> result;
   for (uint32_t i = 0; i < 3; i++) {
 
     auto frustumMat = m_Camera->GetFrustum()->GetMat();
 
-    CGMath::Mat4 mvp = frustumMat * model;
+    Math::Mat4 mvp = frustumMat * model;
 
     std::cout << vertices[i].x << "\n";
 
-    CGMath::Vec4 vertice = CGMath::Vec4{vertices[i]};
+    Math::Vec4 vertice = Math::Vec4{vertices[i]};
 
     std::cout << vertice.x << "\n";
 
-    CGMath::Vec4 v = mvp * vertice;
+    Math::Vec4 v = mvp * vertice;
 
     v = 1 / v.w * v;
 
-    auto v2 = CGMath::Vec2{
+    auto v2 = Math::Vec2{
         float((v.x + 1.0) * 0.5 * (m_ViewPort.w - 1) + m_ViewPort.x),
-        float(m_ViewPort.h - (v.y + 1.0f) * (m_ViewPort.h - 1) + m_ViewPort.y)};
+        float(m_ViewPort.h - (v.y + 1.0f) * 0.5 * (m_ViewPort.h - 1) +
+              m_ViewPort.y)};
 
     result[i] = v2;
   }
@@ -49,19 +50,18 @@ void Renderer::DrawTriangle(const CGMath::Mat4 model,
   }
 }
 
-void Renderer::DrawLine(const CGMath::Vec2 &point_1,
-                        const CGMath::Vec2 &point_2,
-                        const CGMath::Vec4 &color) {
+void Renderer::DrawLine(const Math::Vec2 &point_1, const Math::Vec2 &point_2,
+                        const Math::Vec4 &color) {
 
-  CGMath::Vec2 point_start = CGMath::Vec2{point_1.x, point_1.y};
-  CGMath::Vec2 point_end = CGMath::Vec2{point_2.x, point_2.y};
+  Math::Vec2 point_start = Math::Vec2{point_1.x, point_1.y};
+  Math::Vec2 point_end = Math::Vec2{point_2.x, point_2.y};
 
   auto result = CohenSutherland::CohenSutherlandLineClip(
-      point_start, point_end, CGMath::Vec2{0.0f},
-      CGMath::Vec2{(float)m_Width - 1, (float)m_Height - 1});
+      point_start, point_end, Math::Vec2{0.0f},
+      Math::Vec2{(float)m_Width - 1, (float)m_Height - 1});
 
   if (result) {
-    CGMath::Vec2 p1, p2;
+    Math::Vec2 p1, p2;
     std::tie(p1, p2) = result.value();
     DrawLineWithoutClip((int32_t)p1.x, (int32_t)p1.y, (int32_t)p2.x,
                         (int32_t)p2.y, color);
@@ -72,7 +72,7 @@ void Renderer::DrawLine(const CGMath::Vec2 &point_1,
 
 void Renderer::DrawLineWithoutClip(const int32_t x0, const int32_t y0,
                                    const int32_t x1, const int32_t y1,
-                                   const CGMath::Color &color) {
+                                   const Math::Color &color) {
   auto dx = std::abs(x1 - x0);
   auto dy = std::abs(y1 - y0);
   auto x_Step = x1 >= x0 ? 1 : -1;
