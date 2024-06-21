@@ -37,7 +37,7 @@ int main() {
     };
 
     auto trans = Math::CreateTranslation(
-        static_cast<Math::Vec3>(Math::Vec4{0.0f, 0.0f, -2.0f, 1.0f}));
+        static_cast<Math::Vec3>(Math::Vec4{0.0f, 0.0f, -4.0f, 1.0f}));
 
     auto model = trans * Math::CreateYRotation(radians);
 
@@ -50,7 +50,7 @@ int main() {
     auto v = Math::Vec3{1.9f, 1.7f, 1.1f};
     v * 2.0f;
 
-    auto m1 = Math::CreatePersp(Math::Deg2Rad(45.0f), 1280.0f / 900.0f, 0.1f,
+    auto m1 = Math::CreatePersp(Math::Deg2Rad(30.0f), 1280.0f / 900.0f, 0.1f,
                                 1000.f, 1);
     auto m2 = Math::Mat4::Identity();
 
