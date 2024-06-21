@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/Base.h"
+#include <cmath>
 #include <cstdint>
 #include <initializer_list>
 #include <ostream>
@@ -619,7 +620,6 @@ using Mat4 = Mat<float, 4, 4>;
 inline Mat4 CreatePersp(float fov, float aspect, float near, float far,
                         bool GLCoord) {
   float focal = 1.0 / (near * std::tan(fov));
-
   // clang-format off
   // return Mat4::FromRow({
   //   focal / aspect, 0,                          0,                          0,
@@ -627,12 +627,19 @@ inline Mat4 CreatePersp(float fov, float aspect, float near, float far,
   //   0,              0,                         2.f * near / (far - near), 2.f * near * far / (far - near),
   //  0,             0,                        -1,                         0,
   // });
-  return Mat4::FromRow({
-    focal,  0,              0,            0,
-    0,      aspect * focal, 0,            0,
-    0,      0,             1.0,         0,
-   0,     0,            -1.0f / near, 0,
-  });
+  // return Mat4::FromRow({
+  //   focal,  0,              0,            0,
+  //   0,      aspect * focal, 0,            0,
+  //   0,      0,             1.0,         0,
+  //  0,     0,            -1.0f / near, 0,
+  // });
+                // without far plane, clamp x,y in [-1, 1], z = near
+              return Mat4::FromRow({
+                    focal,          0.0,         0.0, 0.0,
+                    0.0, aspect * focal,         0.0, 0.0,
+                    0.0,        0.0,         1.0, 0.0,
+                    0.0,        0.0, -1.0f / near, 0.0,
+                });
   // clang-format on
 }
 
@@ -654,6 +661,82 @@ inline Mat4 CreateOrtho(float left, float right, float top, float bottom,
      0.0f,                  0.0f,                  0.0f,                1.0f,
     });
   }
+}
+// clang-format on
+
+inline Mat4 CreateTranslation(const Vec3 &position) {
+  // clang-format off
+  return Mat4::FromRow({
+    1.0f, 0.0f, 0.0f, position.x,
+    0.0f, 1.0f, 0.0f, position.y,
+    0.0f, 0.0f,1.0f,position.z,
+   0.0f,0.0f,0.0f,1.0f,
+  });
+  // clang-format on
+}
+
+inline Mat4 CreateZRotation(float radians) {
+  float cos = std::cos(radians);
+  float sin = std::sin(radians);
+  // clang-format off
+  return Mat4::FromRow({
+    cos, -sin,   0.0f,  0.0f,
+    sin,  cos,   0.0f,  0.0f,
+    0.0f, 0.0f, 1.0f, 0.0f,
+   0.0f,0.0f, 1.0f, 1.0f,
+  });
+  // clang-format on
+}
+
+inline Mat4 CreateYRotation(float radians) {
+  float cos = std::cos(radians);
+  float sin = std::sin(radians);
+  // clang-format off
+    return Mat4::FromRow({
+        cos,  0.0f,  sin,  0.0f,
+        0.0f, 1.0f,  0.0,  0.0f,
+       -sin,  0.0f, cos, 0.0f,
+       0.0f,0.0f, 0.0f,1.0f,
+    });
+  // clang-format on
+}
+
+inline Mat4 CreateXRotation(float radians) {
+  float cos = std::cos(radians);
+  float sin = std::sin(radians);
+  // clang-format off
+  return Mat4::FromRow({
+    1.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, cos,  sin,  0.0f,
+    0.0f,-sin, cos, 0.0f,
+   0.0f,0.0f,0.0f,1.0f
+  });
+  // clang-format on
+}
+
+inline Mat4 CreateXYZRotation(const Vec3 &r) {
+  return CreateXRotation(r.x) * CreateYRotation(r.y) * CreateZRotation(r.z);
+}
+
+inline Mat2 CreateRotation2D(float radians) {
+  auto cos = std::cos(radians);
+  auto sin = std::sin(radians);
+  return Mat2::FromRow({
+      cos,
+      -sin,
+      sin,
+      cos,
+  });
+}
+
+inline Mat4 CreateScale(const Vec3 &scale) {
+  // clang-format off
+  return Mat4::FromRow({
+  scale.x,  0.0,      0.0f,     0.0f,
+  0.0f,     scale.y,  0.0f,     0.0f,
+  0.0f,     0.0f,    scale.z, 0.0f,
+ 0.0f,    0.0f,    0.0f,    1.0f,
+  });
   // clang-format on
 }
 
