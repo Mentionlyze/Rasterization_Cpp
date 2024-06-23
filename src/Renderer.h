@@ -26,8 +26,8 @@ public:
                 const Math::Color &color);
 
 private:
-  void DrawLineWithoutClip(const int32_t x0, const int32_t y0, const int32_t x1,
-                           const int32_t y1, const Math::Color &color);
+  void DrawLineWithoutClip(Math::Vec2 &p1, Math::Vec2 &p2,
+                           const Math::Color &color);
 
   int32_t m_Width, m_Height;
   Ref<FrameBuffer> m_FrameBuffer;

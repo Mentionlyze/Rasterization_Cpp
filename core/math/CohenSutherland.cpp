@@ -2,7 +2,7 @@
 #include <optional>
 #include <tuple>
 
-namespace CohenSutherland {
+namespace Core {
 
 int const ComputeOutCode(const Math::Vec2 &point, const Math::Vec2 &rect_min,
                          const Math::Vec2 &rect_max) {
@@ -69,4 +69,4 @@ CohenSutherlandLineClip(Math::Vec2 &point_1, Math::Vec2 &point_2,
   }
 }
 
-} // namespace CohenSutherland
+} // namespace Core

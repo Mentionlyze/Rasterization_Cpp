@@ -70,7 +70,6 @@ template <typename T, uint32_t N> T lengthSqrd(const Vec<T, N> &v);
 template <typename T, uint32_t N> T length(const Vec<T, N> &v);
 
 template <typename T> T Cross(const Vec<T, 2> &v1, const Vec<T, 2> &v2);
-template <typename T> T Cross(const Vec<T, 2> &v1, const Vec<T, 2> &v2);
 template <typename T> Vec<T, 3> Cross(const Vec<T, 3> &v1, const Vec<T, 3> &v2);
 template <typename T, uint32_t N> Vec<T, N> Normalize(const Vec<T, N> &v);
 
@@ -621,12 +620,20 @@ inline Mat4 CreatePersp(float fov, float aspect, float near, float far,
   float focal = 1.0 / (near * std::tan(fov));
 
   // clang-format off
-  // return Mat4::FromRow({
-  //   focal / aspect, 0,                          0,                          0,
-  //   0,              (GLCoord ? 1 : -1) *focal,  0,                          0,
-  //   0,              0,                         2.f * near / (far - near), 2.f * near * far / (far - near),
-  //  0,             0,                        -1,                         0,
-  // });
+  return Mat4::FromRow({
+    focal / aspect, 0,                          0,                          0,
+    0,              (GLCoord ? 1 : -1) *focal,  0,                          0,
+    0,              0,                         2.f * near / (far - near), 2.f * near * far / (far - near),
+   0,             0,                        -1,                         0,
+  });
+  // clang-format on
+}
+
+inline Mat4 CreateFrustum(float fov, float aspect, float near, float far,
+                          bool GLCoord) {
+  float focal = 1.0 / (near * std::tan(fov));
+
+  // clang-format off
   return Mat4::FromRow({
     focal,  0,              0,            0,
     0,      aspect * focal, 0,            0,

@@ -2,7 +2,7 @@
 
 #include "Math.h"
 #include <optional>
-namespace CohenSutherland {
+namespace Core {
 
 enum OUTCODE {
   INSIDE = 1 >> 1,
@@ -18,4 +18,4 @@ int const ComputeOutCode(const Math::Vec2 &point, const Math::Vec2 &rect_min,
 std::optional<std::tuple<Math::Vec2, Math::Vec2>> const
 CohenSutherlandLineClip(Math::Vec2 &point_0, Math::Vec2 &point_1,
                         const Math::Vec2 &rect_min, const Math::Vec2 &rect_max);
-} // namespace CohenSutherland
+} // namespace Core
