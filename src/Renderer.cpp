@@ -27,11 +27,8 @@ void Renderer::DrawTriangle(const Math::Mat4 &model,
 
     Math::Mat4 mvp = frustumMat * model;
 
-    std::cout << vertices[i].x << "\n";
-
-    Math::Vec4 vertice = Math::Vec4{vertices[i]};
-
-    std::cout << vertice.x << "\n";
+    Math::Vec4 vertice =
+        Math::Vec4{vertices[i].x, vertices[i].y, vertices[i].z, 1.0f};
 
     Math::Vec4 v = mvp * vertice;
 

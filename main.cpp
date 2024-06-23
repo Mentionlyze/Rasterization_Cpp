@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "Renderer.h"
-#include "math/Math.h"
+#include "core/math/Math.h"
 #include <iostream>
 
 #define VIEWPORT_TITLE "Rasterization"
@@ -14,7 +14,10 @@ int main() {
                                             VIEWPORT_HEIGHT);
   auto renderer = Rasterization::CreateRef<Rasterization::Renderer>(
       VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-  app->Run([renderer]() {
+
+  float radians = Math::Deg2Rad(0);
+
+  app->Run([&]() {
     renderer->Clear({0.0f, 0.0f, 0.0f, 1.0f});
     renderer->ClearDepth(1.0);
 
@@ -28,19 +31,26 @@ int main() {
     //                    {0.2f, 0.9f, 0.0f, 1.0f});
 
     Math::Vec3 vertices[3] = {
-        Math::Vec3{-1.0f, 1.0f, -2.0f},
-        Math::Vec3{1.0f, 1.0f, -2.0f},
-        Math::Vec3{0.0f, -1.0f, -2.0f},
+        Math::Vec3{-1.0f, 1.0f, 0.0f},
+        Math::Vec3{1.0f, 1.0f, 0.0f},
+        Math::Vec3{0.0f, -1.0f, 0.0f},
     };
 
-    renderer->DrawTriangle(Math::Mat4::Identity(), vertices,
-                           {0.2f, 0.9f, 0.0f, 1.0f});
+    auto trans = Math::CreateTranslation(
+        static_cast<Math::Vec3>(Math::Vec4{0.0f, 0.0f, -4.0f, 1.0f}));
+
+    auto model = trans * Math::CreateYRotation(radians);
+
+    std::cout << model.data[0] << "\n";
+
+    renderer->DrawTriangle(model, vertices, {0.2f, 0.9f, 0.0f, 1.0f});
+
+    radians += 0.01f;
 
     auto v = Math::Vec3{1.9f, 1.7f, 1.1f};
     v * 2.0f;
-    std::cout << v << "\n";
 
-    auto m1 = Math::CreatePersp(Math::Deg2Rad(45.0f), 1280.0f / 900.0f, 0.1f,
+    auto m1 = Math::CreatePersp(Math::Deg2Rad(30.0f), 1280.0f / 900.0f, 0.1f,
                                 1000.f, 1);
     auto m2 = Math::Mat4::Identity();
 
