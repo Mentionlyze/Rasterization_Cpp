@@ -4,8 +4,8 @@
 namespace Core {
 class Bresenham {
 public:
-  Bresenham(Math::Vec2 &p1, Math::Vec2 &p2, const Math::Vec2 &rect_min,
-            const Math::Vec2 &rect_max);
+  Bresenham(const Math::Vec2 &p1, const Math::Vec2 &p2,
+            const Math::Vec2 &rect_min, const Math::Vec2 &rect_max);
   ~Bresenham();
 
   template <class _Callback> void IteratorCallback(_Callback callback) {

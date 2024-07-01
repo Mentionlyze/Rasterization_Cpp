@@ -10,28 +10,26 @@ struct ViewPort {
 
 class Renderer {
 public:
-  Renderer(const int32_t width, const int32_t height);
-  ~Renderer() = default;
+  virtual ~Renderer() = default;
 
-  const Ref<FrameBuffer> GetFrameBuffer() { return m_FrameBuffer; }
+  virtual const int32_t GetCanvasWith() const = 0;
+  virtual const int32_t GetCanvasHeight() const = 0;
 
-  void Clear(const Math::Color &color) { m_FrameBuffer->Clear(color); }
+  virtual const Ref<FrameBuffer> GetFrameBuffer() const = 0;
 
-  void ClearDepth(const float depth) { m_FrameBuffer->ClearDepth(depth); }
+  virtual const Ref<Camera> GetCamera() const = 0;
 
-  void DrawTriangle(const Math::Mat4 &model, const Math::Vec3 (&vertices)[3],
-                    const Math::Color &color);
+  virtual void Clear(const Math::Color &color) = 0;
 
-  void DrawLine(const Math::Vec2 &point_1, const Math::Vec2 &point_2,
-                const Math::Color &color);
+  virtual void ClearDepth(const float depth) = 0;
 
-private:
-  void DrawLineWithoutClip(Math::Vec2 &p1, Math::Vec2 &p2,
-                           const Math::Color &color);
+  virtual void DrawTriangle(const Math::Mat4 &model,
+                            const Math::Vec3 (&vertices)[3],
+                            const Math::Color &color) = 0;
 
-  int32_t m_Width, m_Height;
-  Ref<FrameBuffer> m_FrameBuffer;
-  Ref<Camera> m_Camera;
-  ViewPort m_ViewPort;
+  virtual void DrawLine(const Math::Vec2 &point_1, const Math::Vec2 &point_2,
+                        const Math::Color &color) = 0;
+
+  static Ref<Renderer> Create(const int32_t width, const int32_t height);
 };
 } // namespace Rasterization

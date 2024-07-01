@@ -1,4 +1,5 @@
 #include "CohenSutherland.h"
+#include "math/Math.h"
 #include <optional>
 #include <tuple>
 
@@ -23,16 +24,19 @@ int const ComputeOutCode(const Math::Vec2 &point, const Math::Vec2 &rect_min,
 }
 
 std::optional<std::tuple<Math::Vec2, Math::Vec2>> const
-CohenSutherlandLineClip(Math::Vec2 &point_1, Math::Vec2 &point_2,
+CohenSutherlandLineClip(const Math::Vec2 &point_1, const Math::Vec2 &point_2,
                         const Math::Vec2 &rect_min,
                         const Math::Vec2 &rect_max) {
 
-  auto outcode_1 = ComputeOutCode(point_1, rect_min, rect_max);
-  auto outcode_2 = ComputeOutCode(point_2, rect_min, rect_max);
+  auto p1 = Math::Vec2{point_1};
+  auto p2 = Math::Vec2{point_2};
+
+  auto outcode_1 = ComputeOutCode(p1, rect_min, rect_max);
+  auto outcode_2 = ComputeOutCode(p2, rect_min, rect_max);
 
   while (true) {
     if (!(outcode_1 | outcode_2)) {
-      return std::make_optional(std::make_tuple(point_1, point_2));
+      return std::make_optional(std::make_tuple(p1, p2));
     } else if (outcode_1 & outcode_2) {
       return std::nullopt;
     } else {
@@ -41,29 +45,25 @@ CohenSutherlandLineClip(Math::Vec2 &point_1, Math::Vec2 &point_2,
       auto outCodeOut = outcode_2 > outcode_1 ? outcode_2 : outcode_1;
 
       if (outCodeOut & OUTCODE::TOP) {
-        p.x = point_1.x + (point_2.x - point_1.x) * (rect_max.y - point_1.y) /
-                              (point_2.y - point_1.y);
+        p.x = p1.x + (p2.x - p1.x) * (rect_max.y - p1.y) / (p2.y - p1.y);
         p.y = rect_max.y;
       } else if (outCodeOut & OUTCODE::BOTTOM) {
-        p.x = point_1.x + (point_2.x - point_1.x) * (rect_min.y - point_1.y) /
-                              (point_2.y - point_1.y);
+        p.x = p1.x + (p2.x - p1.x) * (rect_min.y - p1.y) / (p2.y - p1.y);
         p.y = rect_min.y;
       } else if (outCodeOut & OUTCODE::RIGHT) {
-        p.y = point_1.y + (point_2.y - point_1.y) * (rect_max.x - point_1.x) /
-                              (point_2.x - point_1.x);
+        p.y = p1.y + (p2.y - p1.y) * (rect_max.x - p1.x) / (p2.x - p1.x);
         p.x = rect_max.x;
       } else if (outCodeOut & OUTCODE::LEFT) {
-        p.y = point_1.y + (point_2.y - point_1.y) * (rect_min.x - point_1.x) /
-                              (point_2.x - point_1.x);
+        p.y = p1.y + (p2.y - p1.y) * (rect_min.x - p1.x) / (p2.x - p1.x);
         p.x = rect_min.x;
       }
 
       if (outCodeOut == outcode_1) {
-        point_1 = p;
-        outcode_1 = ComputeOutCode(point_1, rect_min, rect_max);
+        p1 = p;
+        outcode_1 = ComputeOutCode(p1, rect_min, rect_max);
       } else {
-        point_2 = p;
-        outcode_2 = ComputeOutCode(point_2, rect_min, rect_max);
+        p2 = p;
+        outcode_2 = ComputeOutCode(p2, rect_min, rect_max);
       }
     }
   }

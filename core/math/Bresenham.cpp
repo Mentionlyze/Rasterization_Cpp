@@ -5,9 +5,9 @@
 #include <utility>
 
 namespace Core {
-Bresenham::Bresenham(Math::Vec2 &p1, Math::Vec2 &p2, const Math::Vec2 &rect_min,
-                     const Math::Vec2 &rect_max) {
-  auto result = CohenSutherlandLineClip(p1, p2, rect_min, rect_max);
+Bresenham::Bresenham(const Math::Vec2 &point_1, const Math::Vec2 &point_2,
+                     const Math::Vec2 &rect_min, const Math::Vec2 &rect_max) {
+  auto result = CohenSutherlandLineClip(point_1, point_2, rect_min, rect_max);
   if (result) {
     Math::Vec2 p1, p2;
     std::tie(p1, p2) = result.value();

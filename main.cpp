@@ -12,8 +12,8 @@ int main() {
 
   auto app = new Rasterization::Application(VIEWPORT_TITLE, VIEWPORT_WIDTH,
                                             VIEWPORT_HEIGHT);
-  auto renderer = Rasterization::CreateRef<Rasterization::Renderer>(
-      VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+  auto renderer =
+      Rasterization::Renderer::Create(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
   float radians = Math::Deg2Rad(0);
 
